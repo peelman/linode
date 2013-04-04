@@ -1,8 +1,10 @@
-#!/usr/bin/python3.1
+#!/usr/bin/python3.3
 #
 # Easy Python3 Dynamic DNS
 # By Jed Smith <jed@jedsmith.org> 4/29/2009
 # This code and associated documentation is released into the public domain.
+#
+# Updated by Kirk Gleason <https://github.com/kgleason> 4/3/2013
 #
 # This script **REQUIRES** Python 3.0 or above.  Python 2.6 may work.
 # To see what version you are using, run this:
@@ -33,21 +35,28 @@
 # You want 123456. The API key MUST have write access to this resource ID.
 #
 RESOURCE = "000000"
+
 #
 # Your Linode API key.  You can generate this by going to your profile in the
 # Linode manager.  It should be fairly long.
 #
-KEY = "abcdefghijklmnopqrstuvwxyz"
+KEY = "REALLYlongAPIkey"
+
+# A domain ID is also needed. There is probably an easier way to get this. I found mine
+# going here in my browser and searching for the domain I wanted. Someday I'll figure 
+# out how to automate this. You'll need the API key from above.
+# https://api.linode.com/api/?api_key={0}&resultFormat=XML&action=domainList
+DOMAINID = "00000"
+
 #
-# The URI of a Web service that returns your IP address as plaintext.  You are
-# welcome to leave this at the default value and use mine.  If you want to run
+# The URI of a Web service that returns your IP address as plaintext. If you want to run
 # your own, the source code of that script is:
 #
 #     <?php
 #     header("Content-type: text/plain");
 #     printf("%s", $_SERVER["REMOTE_ADDR"]);
 #
-GETIP = "http://hosted.jedsmith.org/ip.php"
+GETIP = "http://bot.whatismyipaddress.com"
 #
 # If for some reason the API URI changes, or you wish to send requests to a
 # different URI for debugging reasons, edit this.  {0} will be replaced with the
@@ -91,7 +100,11 @@ except Exception as excp:
 
 def execute(action, parameters):
 	# Execute a query and return a Python dictionary.
+	if DEBUG:
+		print("-->", parameters)
 	uri = "{0}&action={1}".format(API.format(KEY), action)
+	if DEBUG:
+		print("-->", uri)
 	if parameters and len(parameters) > 0:
 		uri = "{0}&{1}".format(uri, urlencode(parameters))
 	if DEBUG:
@@ -122,7 +135,7 @@ def ip():
 
 def main():
 	try:
-		res = execute("domainResourceGet", {"ResourceID": RESOURCE})["DATA"]
+		res = execute("domainResourceGet", {"ResourceID": RESOURCE, "DomainID": DOMAINID})["DATA"][0]
 		if(len(res)) == 0:
 			raise Exception("No such resource?".format(RESOURCE))
 		public = ip()
@@ -136,7 +149,7 @@ def main():
 				"Target": public,
 				"TTL_Sec": res["TTL_SEC"]
 			}
-			execute("domainResourceSave", request)
+			execute("domainResourceUpdate", request)
 			print("OK {0} -> {1}".format(old, public))
 			return 1
 		else:

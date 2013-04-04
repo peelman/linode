@@ -4,5 +4,11 @@ By Jed Smith <jed@jedsmith.org>
 
 For customers of Linode that use the Linode DNS manager.  Released into the public domain.
 
-Requires Python 3.0 or above.  Python 2.6 may work.
+Requires Python 3.0 or above. 
 Contains directions in the script (which you'll have to edit anyway).
+
+This has been tested on a Debian PPC box using Python 3.1
+and in OS X 10.8 using Python 3.3
+
+Update the API methods to what is available presently from Linode.
+Also added in a different WAN IP tool
