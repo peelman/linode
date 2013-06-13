@@ -6,6 +6,8 @@
 #
 # Updated by Kirk Gleason <https://github.com/kgleason> 4/3/2013
 #
+# Updated by Nick Peelman <nick@peelman.us> 5/13/2013
+#
 # This script **REQUIRES** Python 3.0 or above.  Python 2.6 may work.
 # To see what version you are using, run this:
 #
@@ -40,13 +42,14 @@ RESOURCE = "000000"
 # Your Linode API key.  You can generate this by going to your profile in the
 # Linode manager.  It should be fairly long.
 #
-KEY = "REALLYlongAPIkey"
+KEY = os.getenv('LINODE_API_KEY')
 
 # A domain ID is also needed. There is probably an easier way to get this. I found mine
 # going here in my browser and searching for the domain I wanted. Someday I'll figure 
 # out how to automate this. You'll need the API key from above.
 # https://api.linode.com/api/?api_key={0}&resultFormat=XML&action=domainList
-DOMAINID = "00000"
+# You can use the Edit page in Linode's DNS Manager to see your ID (it shows up in the URL)
+DOMAINID = os.getenv('LINODE_DOMAIN_ID')
 
 #
 # The URI of a Web service that returns your IP address as plaintext. If you want to run
@@ -66,7 +69,7 @@ API = "https://api.linode.com/api/?api_key={0}&resultFormat=JSON"
 #
 # Comment or remove this line to indicate that you edited the options above.
 #
-exit("Did you edit the options?  vi this file open.")
+# exit("Did you edit the options?  vi this file open.")
 #
 # That's it!
 #
